@@ -1,0 +1,53 @@
+What is React Context API and why is it better than prop drilling for the cart?
+Answer:
+React Context API is used to share data between components without passing props through multiple levels.
+In my project, the cart data is stored in a CartContext. Any component can access the cart directly using useContext().
+Without Context API, I would have to pass cart data from App → Navbar → ProductList → ProductCard, which is called prop drilling.
+Example:
+JSX
+const { cart, addToCart } = useContext(CartContext);
+This makes the code cleaner and easier to manage.
+
+2. Why does order_items store unit_price instead of reading the product price later?
+Answer:
+The product price may change in the future.
+By storing unit_price at the time of purchase, the order always shows the correct price that the customer actually paid.
+Example:
+Product price today = ₹500
+Customer buys it
+Later price changes to ₹600
+The order should still show ₹500, so unit_price is stored in order_items.
+
+3. What happens if a customer orders 10 units but only 3 are in stock?
+Answer:
+The backend checks the available stock before creating the order.
+If the requested quantity is greater than the stock, the order is rejected and an error message is returned.
+Validation Code:
+Python
+if quantity > product['stock']:
+ return jsonify({
+ "message": "Not enough stock available"
+ }), 400
+This prevents customers from purchasing unavailable products.
+
+4. What is the difference between ProtectedRoute and AdminRoute?
+Answer:
+ProtectedRoute
+Allows any logged-in user to access a page.
+Redirects to login if the user is not authenticated.
+AdminRoute
+Allows only admin users to access a page.
+Redirects normal users if they are not admins.
+ProtectedRoute Example:
+JSX
+if (!user) {
+ return <Navigate to="/login" />;
+}
+return children;
+AdminRoute Example:
+JSX
+if (!user || user.role !== "admin") {
+ return <Navigate to="/" />;
+}
+return children;
+ProtectedRoute checks login status, while AdminRoute checks both login status and admin role.
